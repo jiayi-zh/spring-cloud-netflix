@@ -1,0 +1,21 @@
+server:
+  port: 8761
+
+spring:
+  application:
+    name: spring-cloud-eureka
+
+eureka:
+  instance:
+    hostname: 127.0.0.1
+    # 设置在
+    lease-expiration-duration-in-seconds: 10
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://127.0.0.1:${server.port}/eureka/
+  server:
+    wait-time-in-ms-when-sync-empty: 0
+    # 关闭自我保护机制
+    enable-self-preservation: false

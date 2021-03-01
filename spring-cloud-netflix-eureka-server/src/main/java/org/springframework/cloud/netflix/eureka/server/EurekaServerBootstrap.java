@@ -67,7 +67,9 @@ public class EurekaServerBootstrap {
 
 	public void contextInitialized(ServletContext context) {
 		try {
+			// 初始化 Eureka 的环境变量
 			initEurekaEnvironment();
+			// 初始化 Eureka 的上下文
 			initEurekaServerContext();
 
 			context.setAttribute(EurekaServerContext.class.getName(), this.serverContext);
@@ -109,12 +111,17 @@ public class EurekaServerBootstrap {
 			this.awsBinder.start();
 		}
 
+		// 初始化 Eureka Server 上下文
 		EurekaServerContextHolder.initialize(this.serverContext);
 
 		log.info("Initialized server context");
 
 		// Copy registry from neighboring eureka node
+		// 从相邻的 Eureka 节点复制注册表
 		int registryCount = this.registry.syncUp();
+		// 默认每30s发送心跳
+		// 修改 Eureka 状态为 UP
+		// 开启定时任务, 用于清理 60s 内没有心跳的客户端, 自动下线
 		this.registry.openForTraffic(this.applicationInfoManager, registryCount);
 
 		// Register all monitoring statistics.

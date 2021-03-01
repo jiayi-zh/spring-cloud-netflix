@@ -62,14 +62,20 @@ public class EurekaServerInitializerConfiguration implements ServletContextAware
 
 	@Override
 	public void start() {
+		log.info("SmartLifecycle#start() 开启线程初始化 EurekaServer");
+		// 开启线程启动 Eureka Server
 		new Thread(() -> {
 			try {
 				// TODO: is this class even needed now?
+				// 初始化EurekaServer，同时启动Eureka Server
 				eurekaServerBootstrap.contextInitialized(EurekaServerInitializerConfiguration.this.servletContext);
 				log.info("Started Eureka Server");
 
+				// 发布 EurekaRegistryAvailableEvent 事件
 				publish(new EurekaRegistryAvailableEvent(getEurekaServerConfig()));
+				// 设置标志位
 				EurekaServerInitializerConfiguration.this.running = true;
+				// 发布 EurekaServerStartedEvent 事件
 				publish(new EurekaServerStartedEvent(getEurekaServerConfig()));
 			}
 			catch (Exception ex) {
